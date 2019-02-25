@@ -3,11 +3,9 @@ using Android.App;
 using Android.Hardware;
 using Android.Media;
 using Android.OS;
-using Android.Runtime;
 using Android.Support.Design.Widget;
 using Android.Support.V7.App;
 using Android.Views;
-using Android.Widget;
 
 namespace DoggySee
 {
@@ -15,7 +13,7 @@ namespace DoggySee
     public class MainActivity : AppCompatActivity, ISensorEventListener
     {
 
-        private SensorManager sm;
+        private SensorManager _sensorManager;
         private MediaPlayer _mediaPlayer;
         private DateTime _lastBeep;
 
@@ -23,21 +21,13 @@ namespace DoggySee
         {
             base.OnCreate(savedInstanceState);
             SetContentView(Resource.Layout.activity_main);
-            sm = (SensorManager)this.GetSystemService(SensorService);
+            _sensorManager = (SensorManager)this.GetSystemService(SensorService);
             _mediaPlayer = MediaPlayer.Create(global::Android.App.Application.Context, Resource.Raw.beep);
 
-            if (sm.GetSensorList(SensorType.Proximity).Count != 0)
+            if (_sensorManager.GetSensorList(SensorType.Proximity).Count != 0)
             {
-                Sensor s = sm.GetDefaultSensor(SensorType.Proximity);
-                try
-                {
-                    sm.RegisterListener(this, s, SensorDelay.Normal);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                    throw;
-                }
+                var proximitySensor = _sensorManager.GetDefaultSensor(SensorType.Proximity);
+                _sensorManager.RegisterListener(this, proximitySensor, SensorDelay.Normal);
             }
 
             Android.Support.V7.Widget.Toolbar toolbar = FindViewById<Android.Support.V7.Widget.Toolbar>(Resource.Id.toolbar);
@@ -49,8 +39,7 @@ namespace DoggySee
 
         public void OnAccuracyChanged(Sensor sensor, SensorStatus accuracy)
         {
-            var s = sensor;
-            var a = accuracy;
+            //todo
         }
 
         public void OnSensorChanged(SensorEvent e)
@@ -78,7 +67,7 @@ namespace DoggySee
         private void FabOnClick(object sender, EventArgs eventArgs)
         {
             View view = (View)sender;
-            Snackbar.Make(view, "Replace with your own action", Snackbar.LengthLong)
+            Snackbar.Make(view, "Send questions to davepadot@gmail.com", Snackbar.LengthLong)
                 .SetAction("Action", (Android.Views.View.IOnClickListener)null).Show();
         }
 
