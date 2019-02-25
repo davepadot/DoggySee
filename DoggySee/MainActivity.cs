@@ -1,5 +1,7 @@
 ﻿using System;
 using Android.App;
+using Android.Hardware;
+using Android.Media;
 using Android.OS;
 using Android.Runtime;
 using Android.Support.Design.Widget;
